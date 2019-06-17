@@ -16,7 +16,12 @@
 # Configuration for the AppDynamics framework
 ---
 version: 4.+
-repository_root: https://packages.appdynamics.com/java
+#repository_root: https://packages.appdynamics.com/java
+repository_root: "http://yumrepo.sys.comcast.net/camo/appd/cf_agent_repo/4.5.9/"
 default_application_name: $(jq -r -n "$VCAP_APPLICATION | .space_name + \":\" + .application_name")
-default_node_name: $(jq -r -n "$VCAP_APPLICATION | .application_name + \":$CF_INSTANCE_INDEX\"")
+
+#default_node_name: $(jq -r -n "$VCAP_APPLICATION | .application_name + \":$CF_INSTANCE_INDEX\"")
+default_node_name: $(ruby -e "require 'json' ; a = JSON.parse(ENV['VCAP_APPLICATION']);
+  puts \"#{a['application_name'].split('#')[0]}:pcf-#{a['cf_api'].match(/.*api\.(.*)\.(app|cf)\..*/)[1]}:#{a['instance_index']}\"")
+
 default_tier_name: 
